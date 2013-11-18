@@ -90,10 +90,17 @@
             return source_text.charAt(pos + 1);
         }
 
-        function bigpeek() {
-            return source_text.charAt(pos + 1) + source_text.charAt(pos + 2) + source_text.charAt(pos + 3) + source_text.charAt(pos + 4) + source_text.charAt(pos + 5) + source_text.charAt(pos + 6);
+        function getrow() {
+          var test1 = source_text.substr(pos, source_text.indexOf(';') + 1);
+          var test2 = source_text.substr(pos, source_text.indexOf('{') + 1);
+          
+          if(test1.length > test2.length) {
+            return test2;
+          } else {
+            return test1;
+          }
         }
-
+        
         function eatString(endChar) {
             var start = pos;
             while (next()) {
@@ -226,20 +233,15 @@
                 insideRule = false;
             } else if (ch === ":") {
                 eatWhitespace();
-
-                var pseudoClasses = ['hover','before','after','active','visited','link','first-','focus','first-','lang','nth-ch','not'],
-                    pseudoClassesLength = pseudoClasses.length,
-                    found = 0;
-                while(pseudoClassesLength--) {
-                   if (bigpeek().indexOf(pseudoClasses[pseudoClassesLength])!=-1) {
-                       found = 1;
-                   }
-                }
-
-                if(found === 0) {
-                    output.push(ch, " ");
+                
+                if(getrow().indexOf("{") !== -1){
+                   
+                     output.push(ch);
+              
                 } else {
-                    output.push(ch);
+                
+                    output.push(ch, " ");
+                
                 }
 
                 insideRule = true;
